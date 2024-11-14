@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+ @media screen and (max-width:500px) {
+    .chat-wrapper> .chat-main > .chat-box{
+        display: none;
+    }
+
+    .chat-wrapper > .chat-main >.chats{
+        width: 100%;
+    }
+ }
