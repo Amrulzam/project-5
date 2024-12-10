@@ -1,11 +1,19 @@
 import React,{useState} from 'react';
 import { Stack, Box, IconButton } from '@mui/material';
 import {ChatDots, Users, Phone, GearSix, UserCirclePlus, MagnifyingGlass} from "@phosphor-icons/react";
+import { setSelect } from '../features/sideBarSlice';
+import { useDispatch,useSelector } from 'react-redux';
 
 
 const SideBar = () => {
 
+    const dispatch = useDispatch();
     const [selected, setSelected] = useState(1);
+
+    const handleSelect = (index) => {
+        dispatch(setSelect({ selectedInd: index }));
+        setSelected(index);
+    };
 
     const sidebtn= [
         {
@@ -55,14 +63,14 @@ const SideBar = () => {
                                 '&:hover':{
                                     bgcolor:"lightblue"
                                 }
-                            }} onClick={()=>{setSelected(x.index)}}>
+                            }} onClick={()=>{handleSelect(x.index)}}>
                                 {x.btn}
                                 </IconButton>:<IconButton key={x.index}sx={{
                                 borderRadius:1,
                                 '&:hover':{
                                     bgcolor:"lightblue"
                                 }
-                            }} onClick={()=>{setSelected(x.index)}}>
+                            }} onClick={()=>{handleSelect(x.index)}}>
                                 {x.btn}
                                 </IconButton>)
                         })

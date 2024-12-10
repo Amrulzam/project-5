@@ -19,9 +19,17 @@
 }
 
 .reciever-wrapper > .reciever-time{
+    position: relative;
     height: inherit;
     display: flex;
     align-items: flex-end;
     font-size: 0.7rem;
     margin-bottom: 5px;
 }
+
+#more-options:hover{
+    background-color: #878787;
+    color: whitesmoke;
+}
+
+

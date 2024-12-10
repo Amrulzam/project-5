@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon idex.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,10 +14,13 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "msnodesqlv8": "^4.2.1",
     "mssql": "^11.0.1",
     "nanoid": "^5.0.8",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.7",
+    "path-to-regexp": "^8.2.0",
+    "socket.io": "^4.8.1"
   }
 }

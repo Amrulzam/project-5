@@ -1,0 +1,57 @@
+.login-card-wrapper{
+    width: 100%;
+}
+.login-card-wrapper > .login-form{
+    width: 100%;
+    margin-inline: auto;
+}
+.login-card-wrapper > .login-form >h3{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.login-card-wrapper >.login-form >ul{
+    width: 100%;
+    padding: 10px;
+    list-style: none;
+    margin-inline: auto;
+}
+.login-card-wrapper >.login-form >ul >li{
+    width: 100%;
+    display: flex;
+    padding: 7px;
+    margin-bottom: 10px;
+    align-items: center;
+    background-color: rgba(204, 227, 235, 0.712);
+    border-radius: 8px;
+}
+.login-card-wrapper >.login-form >ul >li >input{
+    width: 100%;
+    border: none;
+    height: 30px;
+    padding-left: 10px;
+    background-color: transparent;
+}
+.login-card-wrapper >.login-form >ul >li >input:focus{
+    outline: none;
+}
+
+#btn{
+    background-color: rgb(137, 168, 180);
+}
+#btn>button{
+    width: 100%;
+    border: none;
+    height: 25px;
+    padding-left: 10px;
+    color: whitesmoke;
+    background-color: transparent;
+    font-size: min(5vw,1.2rem);
+    font-weight: 500;
+    cursor: pointer;
+}
+#btn:hover {
+    background-color: rgb(162, 197, 211);
+}
