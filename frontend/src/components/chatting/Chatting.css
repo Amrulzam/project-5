@@ -12,6 +12,13 @@
     background-color: rgb(146, 173, 183);
 }
 
+/* chatting message options */
+.chatting-wrapper > .message-more-options{
+    position: fixed;
+    z-index: 10;
+    height: auto;
+    width: auto;
+}
 
 
 /* chatting middle */

@@ -1,8 +1,10 @@
 import React from "react";
 import "./ChatCard.css";
 import { Typography, Badge, Stack } from "@mui/material";
+import { useSelector } from "react-redux";
 
 const ChatCard = ({ props }) => {
+  const currentUser = useSelector((state) => state.userSlice);
   return (
     <div className="chat-card-wrapper">
 
@@ -12,7 +14,7 @@ const ChatCard = ({ props }) => {
           <img src={props.img} alt="" />
         </div>
 
-        {/* chat card middle */}
+        {/* chat card CENTER */}
         <Stack
           direction="column"
           sx={{
@@ -22,7 +24,7 @@ const ChatCard = ({ props }) => {
           }}
         >
           <Typography variant="h6">{props.name}</Typography>
-          <Typography variant="caption">You: {props.lastMsg}</Typography>
+          <Typography variant="caption">{props.sender=currentUser.id?"You:":""} {props.lastMsg}</Typography>
         </Stack>
       </div>
 

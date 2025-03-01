@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "homepage": "https://Amrulzam.github.io/project-5/",
   "private": true,
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
@@ -16,6 +17,8 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "emoji-mart": "^5.6.0",
+    "luxon": "^3.5.0",
+    "moment": "^2.30.1",
     "phosphor": "^0.7.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -29,6 +32,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -49,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2"
   }
 }

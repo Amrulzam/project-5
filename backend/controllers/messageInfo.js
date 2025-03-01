@@ -15,7 +15,7 @@ const uploadMessage = async (messageData) => {
       .input("MESSAGE", sql.VarChar, messageData.MESSAGE)
       .input("SENDER_ID", sql.VarChar, messageData.SENDER_ID)
       .input("RECEIVER_ID", sql.VarChar, messageData.RECEIVER_ID)
-      .input("TIME_STAMP", sql.VarChar, messageData.TIME_STAMP)
+      .input("TIME_STAMP", sql.DateTime, messageData.TIME_STAMP)
       .query(`INSERT INTO MESSAGES(CHAT_ID,SENDER, MESSAGE, SENDER_ID, RECEIVER_ID, [TIME_STAMP])
             VALUES(@CHAT_ID,@SENDER, @MESSAGE, @SENDER_ID, @RECEIVER_ID, @TIME_STAMP)`);
 
@@ -40,6 +40,7 @@ const getMessage = async (SENDER_ID, RECEIVER_ID) => {
             .query(`
                 SELECT * FROM MESSAGES
                 WHERE (SENDER_ID = @SENDER_ID AND RECEIVER_ID = @RECEIVER_ID) OR (SENDER_ID = @RECEIVER_ID AND RECEIVER_ID = @SENDER_ID)
+                ORDER BY TIME_STAMP
             `);
 
             console.log("sever side ret: "+result.recordset);

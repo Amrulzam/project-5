@@ -39,7 +39,7 @@ const Users = () => {
       console.log("Error getting Messages : "+err);
     })
 
-    dispatch(setDefault());
+    //dispatch(setDefault());
     dispatch(
       setChatting({
         userName: name,
