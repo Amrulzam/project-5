@@ -3,6 +3,7 @@ import userReducer from './features/userSlice';
 import sideBarReducer from './features/sideBarSlice';
 import chattingReducer from './features/chattingSlice';
 import roomReducer from './features/roomSlice';
+import positionReducer, { positionSlice } from './features/positionSlice';
 import socketReducer, { socketSlice } from './features/socketSlice';
 
 export const store = configureStore({
@@ -12,5 +13,6 @@ export const store = configureStore({
         chattingSlice:chattingReducer,
         roomSlice:roomReducer,
         socketSlice: socketReducer,
+        positionSlice:positionReducer
     },
 })

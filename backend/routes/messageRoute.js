@@ -1,5 +1,6 @@
 const express = require('express');
 const {uploadMessage,getMessage} = require('../controllers/messageInfo');
+const {DateTime} = require('luxon');
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.post('/get', async (req,res)=>{
 
 router.post('/upload', async(req,res)=>{
     const {CHAT_ID,SENDER, MESSAGE,SENDER_ID, RECEIVER_ID, TIME_STAMP} = req.body;
+
     try{
         const msgData = {
             CHAT_ID,
@@ -26,13 +28,12 @@ router.post('/upload', async(req,res)=>{
             MESSAGE,
             SENDER_ID,
             RECEIVER_ID,
-            TIME_STAMP :TIME_STAMP || new Date().toISOString(),
+            TIME_STAMP :TIME_STAMP || DateTime.now().toSQL(),
         }
         const msg = await uploadMessage(msgData);
         if(msg.error){
             return res.status(500).json({message:msg.message});
         }
-
         return res.status(200).json({message:msg.message});
     }catch(err){
         return res.status(500).json({message:"Couldn't upload message"});

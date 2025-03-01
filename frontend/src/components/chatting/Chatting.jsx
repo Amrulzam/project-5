@@ -11,11 +11,14 @@ import {
 } from "@mui/material";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import Sender from "../sender/Sender";
+import ChatCardText from "../messageCard/chatCardText/ChatCardText";
 import Reciever from "../reciever/Reciever";
 import { nanoid } from "nanoid";
 import { useSelector, useDispatch } from "react-redux";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { setPosition } from "../../features/positionSlice";
+import MessageOptions from '../messageCard/messageOptions/MessageOptions';
 
 import {
   PhoneCall,
@@ -30,6 +33,12 @@ import {
   File,
   UserSquare,
   DotsThreeVertical,
+  ArrowBendUpLeft,
+  Copy,
+  FolderUser,
+  ArrowBendUpRight,
+  Star,
+  Backspace,
 } from "@phosphor-icons/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -37,19 +46,21 @@ import { useSocket } from "../../context/SocketContext";
 import { setRoom } from "../../features/roomSlice";
 import { setMessages } from "../../features/chattingSlice";
 import { selectSocket } from "../../features/socketSlice";
+import { DateTime } from "luxon";
 
 const Chatting = ({ props }) => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const room = useSelector((state) => state.roomSlice.room);
-  const chatting = useSelector((state)=>state.chattingSlice);
+  const chatting = useSelector((state) => state.chattingSlice);
 
   const socket = useSocket();
   const [msg, setMsg] = useState("");
-  const [chats, setChats] = useState(chatting.messages||[]);
+  const [chats, setChats] = useState(chatting.messages || []);
+  const [messageReceiving, setMessageReceiving] = useState(false);
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const response = await axios.post("http://localhost:4002/message/get", {
@@ -69,8 +80,38 @@ const Chatting = ({ props }) => {
 
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [mediaOpen, setMediaOpen] = useState(false);
+  const [messageOptionsOpen, setMessageOptionsOpen] = useState(false);
+
+  const [haveMet, setHaveMet] = useState(null);
   const chatEndRef = useRef();
   const receiverId = props.receiver_id;
+
+  const moreOptions = [
+    {
+      icon: <ArrowBendUpLeft size={25} />,
+      title: "Reply",
+    },
+    {
+      icon: <Copy size={25} />,
+      title: "Copy",
+    },
+    {
+      icon: <FolderUser size={25} />,
+      title: "Reply Privately",
+    },
+    {
+      icon: <ArrowBendUpRight size={25} />,
+      title: "Forward",
+    },
+    {
+      icon: <Star size={25} />,
+      title: "Star",
+    },
+    {
+      icon: <Backspace size={25} />,
+      title: "Delete",
+    },
+  ];
 
   const joinRoom = () => {
     if (room !== "") {
@@ -80,10 +121,10 @@ const Chatting = ({ props }) => {
 
   useEffect(() => {
     localStorage.setItem("currentUser", props.name);
-    setChats(chatting.messages)
+    setChats(chatting.messages);
   }, [chatting.messages]);
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     socket.on("private message", (data) => {
       setChats((prev) => [...prev, data]);
     });
@@ -92,12 +133,27 @@ const Chatting = ({ props }) => {
   }, []); */
 
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    axios
+      .post(
+        `http://localhost:4002/conversations/${props.sender_id}/${props.receiver_id}`
+      )
+      .then((res) => {
+        console.log("converstion verified");
+        setHaveMet(res.data.exists);
+      })
+      .catch((err) => {
+        console.log("error verifying conversation");
+      });
   }, [chats]);
 
   useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "auto" });
+    }
+  }, [chats, messageReceiving]);
+
+  useEffect(() => {
+    setMessageReceiving(true);
     const handleMessage = (data) => {
       console.log("Received message:", data);
       setChats((prev) => [...prev, data]);
@@ -109,6 +165,7 @@ const Chatting = ({ props }) => {
     // Cleanup listener to prevent duplicates
     return () => {
       socket.off("privateMessage", handleMessage);
+      setMessageReceiving(false);
     };
   }, [socket]);
 
@@ -138,13 +195,10 @@ const Chatting = ({ props }) => {
       let messageData = {
         CHAT_ID: nanoid(),
         MESSAGE: msg,
-        SENDER: props.name,
+        SENDER: props.sender,
         SENDER_ID: props.sender_id,
         RECEIVER_ID: props.receiver_id,
-        TIME_STAMP: `${new Date().getHours()}:${new Date()
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}`,
+        TIME_STAMP: DateTime.now().toISO({ includeOffset: false }),
       };
       setChats((prev) => [...prev, messageData]);
 
@@ -159,11 +213,33 @@ const Chatting = ({ props }) => {
           console.log("Error uploading message at chatting- frontend: " + err);
         });
 
-      socket.emit("sendMessageToUser", { receiverId,messageData });
+      socket.emit("sendMessageToUser", { receiverId, messageData });
 
+      if (!haveMet) {
+        axios
+          .post(
+            `http://localhost:4002/conversations/add/${props.sender_id}/${props.receiver_id}/${messageData.CHAT_ID}`
+          )
+          .then((res) => {
+            console.log("conversation created " + res.data.done);
+          })
+          .catch((err) => {
+            console.log(
+              "error on creating conversation " +
+                localStorage.getItem("currentUser")
+            );
+          });
+      }
       setMsg("");
       textArea.current.value = "";
     }
+  };
+
+  const mousePosition = useSelector((state)=>state.positionSlice);
+
+  const handleMessageOptions = (e) => {
+    dispatch(setPosition({ x_cor: e.clientX || 100, y_cor: e.clientY || 100 }));
+    setMessageOptionsOpen(!messageOptionsOpen);
   };
 
   const handleEmojiSelect = (emoji) => {
@@ -173,6 +249,13 @@ const Chatting = ({ props }) => {
 
   return (
     <div className="chatting-wrapper">
+      <div className="message-more-options" style={{left:`${mousePosition.x}px`,top:`${mousePosition.y}px`}}>
+        <MessageOptions props={{
+          moreOptions:moreOptions,
+          moreOptionsOpen:messageOptionsOpen,
+          setMoreOptionsOpen:setMessageOptionsOpen
+        }} />
+      </div>
       <div className="chatting-top">
         <Stack
           direction="row"
@@ -275,43 +358,37 @@ const Chatting = ({ props }) => {
           <CaretDown size={21} />
         </div>
         <ul>
-          {chats.map((chat,index) => {
+          {chats.map((chat, index) => {
             return (
               <li key={index} ref={chatEndRef}>
                 {chat.SENDER_ID == props.sender_id ? (
-                  <Sender
+                  <ChatCardText
                     props={{
                       img: "assets/pic1.jpg",
-                      type: "text",
                       msg: chat.MESSAGE,
-                      time: chat.TIME_STAMP,
-                      imgList: [
-                        "assets/pic1.jpg",
-                        "assets/pic4.jpg",
-                        "assets/pic4.jpg",
-                        "assets/pic5.jpg",
-                        "assets/pic5.jpg",
-                      ],
+                      time: `${DateTime.fromISO(chat.TIME_STAMP).toFormat(
+                        "HH:mm a"
+                      )}`,
                       sender: chat.SENDER,
+                      isSender: true,
+                      setMousePosition:handleMessageOptions
+                    }}
+                  />
+                ) : chat.RECEIVER_ID == props.receiver_id || props.sender_id ? (
+                  <ChatCardText
+                    props={{
+                      img: "assets/pic1.jpg",
+                      msg: chat.MESSAGE,
+                      time: `${DateTime.fromISO(chat.TIME_STAMP).toFormat(
+                        "HH:mm a"
+                      )}`,
+                      sender: chat.SENDER,
+                      isSender: false,
+                      setMousePosition:handleMessageOptions
                     }}
                   />
                 ) : (
-                  <Reciever
-                    props={{
-                      img: "assets/pic4.jpg",
-                      type: "text",
-                      msg: chat.MESSAGE,
-                      imgList: [
-                        "assets/pic1.jpg",
-                        "assets/pic4.jpg",
-                        "assets/pic4.jpg",
-                        "assets/pic5.jpg",
-                        "assets/pic5.jpg",
-                      ],
-                      time: chat.TIME_STAMP,
-                      sender: chat.SENDER,
-                    }}
-                  />
+                  "alert"
                 )}
               </li>
             );

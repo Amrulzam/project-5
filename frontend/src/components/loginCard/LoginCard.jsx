@@ -57,7 +57,7 @@ const LoginCard = () => {
         navigate('/dashboards',{replace:false});
       }).catch((err)=>{
         console.error("request failed "+ err);
-        alert("Login failed!");
+        alert("Login failed! "+err);
     })
 
     }

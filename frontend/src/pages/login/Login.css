@@ -73,3 +73,28 @@
     align-items: center;
     padding: 8px;
 }
+
+
+@media screen and (max-width: 870px){
+    .login-wrapper > .login{
+        flex-direction: column;
+    }
+    .login-wrapper > .login >.login-left{
+        width: 100%;
+    }
+    .login-wrapper > .login >.login-middle{
+        width: 100%;
+        margin-left: 0;
+        flex-direction: row;
+        margin: 10px;
+    }
+    .login-wrapper > .login >.login-middle >li{
+        width: 100%;
+        margin: 0 5px;
+        padding: 7px;
+    }
+    .login > .login-right{
+        width: 100%;
+    }
+
+}

@@ -20,26 +20,26 @@ const Chat = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log("Chat component rendered");
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get("http://localhost:4002/verify", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
+    const verifyUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get("http://localhost:4002/verify", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!res.data.loggedState) {
           navigate("/login", { replace: false });
         }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-      socket.emit('register',user.id);
+    verifyUser();
+    socket.emit("register", user.id);
+  }, [socket, user.id, navigate]);
 
-  }, []);
 
   let chatContent;
   switch (selectedIndex) {

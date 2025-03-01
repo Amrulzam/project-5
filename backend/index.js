@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const { login, register, getAll } = require("./controllers/auth");
 const verifyRoute = require("./routes/verifyRoute");
 const messageRoute = require("./routes/messageRoute");
+const conversationRoute = require('./routes/conversationRoute');
 const { Socket, Server } = require("socket.io");
 
 const app = new express();
@@ -53,6 +54,7 @@ io.on("connection", (socket) => {
 
 app.use("/verify", verifyRoute);
 app.use("/message", messageRoute);
+app.use('/conversations', conversationRoute);
 
 app.post("/login", login);
 app.post("/register", register);
