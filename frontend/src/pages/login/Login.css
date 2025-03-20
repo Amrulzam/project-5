@@ -18,10 +18,9 @@
 
 
 /* login wrapper middle */
-.login-wrapper > .login{
+.login{
     margin-inline: auto;
     width: 70%;
-    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,6 +28,7 @@
     padding: 20px;
     border-radius: 8px;
 }
+
 
 .login-wrapper > .login >.login-left{
     width: 50%;
@@ -55,6 +55,7 @@
     text-align: center;
     border-radius: 8px;
     margin-bottom: 10px;
+    transition: color 0.3s ease-in-out;
 }
 .login-wrapper > .login >.login-middle >li:hover{
     color: whitesmoke;
@@ -64,6 +65,42 @@
 /* login right */
 .login > .login-right{
     width: 60%;
+    min-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: min-height 0.3s ease-in-out;
+    overflow: hidden;
+
+}
+@keyframes slideH {
+    from{
+        height: 0px;
+        opacity: 0;
+    }
+
+    to{
+        height: fit-content;
+        opacity: 1;
+    }
+}
+.login > .login-right > div{
+    width: 100%;
+    height: inherit;
+    overflow: hidden;
+}
+/* id lpgin-right-div-2 */
+#login-right-div-2{
+    animation: slideH 0.6s ease-in;
+}
+.login >.animate-min-300{
+    min-height: 300px;
+}
+.login >.animate-min-400{
+    min-height: 400px;
+}
+.login >.animate-min-500{
+    min-height: 300px;
 }
 
 
@@ -98,3 +135,17 @@
     }
 
 }
+
+/* Smooth hiding */
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+  }
+
+  .visible {
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+  }

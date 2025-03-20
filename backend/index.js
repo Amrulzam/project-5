@@ -6,6 +6,8 @@ const { login, register, getAll } = require("./controllers/auth");
 const verifyRoute = require("./routes/verifyRoute");
 const messageRoute = require("./routes/messageRoute");
 const conversationRoute = require('./routes/conversationRoute');
+const mailRoute = require('./routes/mailRoute');
+const userRoute = require('./routes/userRoute');
 const { Socket, Server } = require("socket.io");
 
 const app = new express();
@@ -13,7 +15,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "http://localhost:3001",
     methods: ["GET", "POST"],
   },
 });
@@ -55,10 +57,15 @@ io.on("connection", (socket) => {
 app.use("/verify", verifyRoute);
 app.use("/message", messageRoute);
 app.use('/conversations', conversationRoute);
+app.use('/mail',mailRoute);
+app.use('/update',userRoute);
 
 app.post("/login", login);
 app.post("/register", register);
 app.get("/dashboards/:email", getAll);
+app.get("/x",async (req,res)=>{
+  res.send("Hello");
+})
 
 server.listen(4002, () => {
   console.log("Listening on port 4002");

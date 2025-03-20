@@ -5,7 +5,8 @@ const initialState = {
     name: "",
     _state: "",
     id:"",
-    messages:[]
+    messages:[],
+    selected:false,
 }
 
 export const chattingSlice = createSlice({
@@ -19,6 +20,7 @@ export const chattingSlice = createSlice({
             state._state=userState;
             state.id= userId;
             state.messages= userMessages;
+            state.selected=true;
         },
         setMessages: (state,action)=>{
             const {userMessages} = action.payload;
@@ -30,6 +32,7 @@ export const chattingSlice = createSlice({
             state._state="";
             state.id= "";
             state.messages= [];
+            state.selected=false;
         }
     }
 })

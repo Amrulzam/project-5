@@ -55,3 +55,32 @@
 #btn:hover {
     background-color: rgb(162, 197, 211);
 }
+
+
+/*Login input info */
+.login-card-wrapper > .login-form > ul > li  .login-input-info {
+    margin-left: 5px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+.login-card-wrapper > .login-form > ul > li  .login-input-info:hover{
+    color: rgba(131, 131, 131, 0.841);
+}
+.login-card-wrapper > .login-form > ul > li > div{
+    position: relative;
+}
+
+.login-card-wrapper > .login-form > ul > li > .login-info > .login-input-info-detail{
+    height: fit-content;
+    padding: 6px;
+    z-index: 10;
+    width: 240px;
+    position: absolute;
+    background-color: beige;
+    display: none;
+    justify-content: center;
+    text-align: center;
+    right: 11px;
+    border-radius: 7px;
+    margin-top: 7px;
+}
