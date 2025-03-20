@@ -14,7 +14,7 @@ const RegisterCard = () => {
   });
   const [cPassword, setCPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user.fName || !user.lName || !user.email || !user.password) {
       alert("Please fill in all fields.");
@@ -26,32 +26,21 @@ const RegisterCard = () => {
       return;
     }
 
-    axios
-      .post("http://localhost:4002/register", {
-        fName: user.fName,
-        lName: user.lName,
-        email: user.email,
-        password: user.password,
-      })
-      .then((res) => {
-        const { error, message, privateKey } = res.data;
-        if (error) {
-          alert(message);
-        } else {
-          console.log(message);
-          localStorage.setItem("privateKey", privateKey);
-          setUser({
-            fName: "",
-            lName: "",
-            email: "",
-            password: "",
-          })
-          navigate("/login", { replace: false });
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to Register:", err);
-      });
+    let isAuthenticated = false
+    axios.get(`http://localhost:4002/mail/sendOtp/${user.email}`).then((res)=>{
+      const {message} = res.data;
+      alert(message);
+    }).catch((err)=>{
+      console.log("something went wrong when getting OTP "+err);
+    })
+    navigate(`/verify_otp/${user.email}?register=true`,{state:{
+      fName: user.fName,
+      lName: user.lName,
+      email: user.email,
+      password: user.password,
+    }});
+
+
   };
 
   return (

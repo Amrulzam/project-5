@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./LoginCard.css";
-import { EnvelopeSimple, Key } from "@phosphor-icons/react";
+import { EnvelopeSimple, Key, Info } from "@phosphor-icons/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ const LoginCard = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [infoOpen, setInfoOpen] = useState(null);
 
   const handleSocket = () => {
     const newSocket = io("http://localhost:4002", {
@@ -71,10 +72,22 @@ const LoginCard = () => {
           <li>
             <EnvelopeSimple size={20} />
             <input type="email" placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}}/>
+            <div className="login-info" >
+              <Info className="login-input-info" data-field="email" size={18} onMouseEnter={(e)=>{setInfoOpen(e.currentTarget.dataset.field)}} onMouseLeave={()=>{setInfoOpen(null)}}/>
+              <div className="login-input-info-detail" style={{display:infoOpen === "email" ?"flex":"none"}}>
+                <p>Enter a valid Email</p>
+              </div>
+            </div>
           </li>
           <li>
             <Key size={20} />
             <input type="password" placeholder="Password"  onChange={(e)=>{setPassword(e.target.value)}}/>
+            <div className="login-info">
+              <Info className="login-input-info" size={18} data-field="password" onMouseEnter={(e)=>{setInfoOpen(e.currentTarget.dataset.field)}} onMouseLeave={(e)=>{setInfoOpen(null)}}/>
+              <div className="login-input-info-detail" style={{display:infoOpen === "password"?"flex":"none"}}>
+              <p>Password should contain minimum 8 characters. With an uppercase letter, a lower case letter and a special symbol</p>
+              </div>
+            </div>
           </li>
           <li id="btn">
             <button type="submit">Login</button>

@@ -138,14 +138,14 @@ const getUserConversations = async (id) => {
     for (let i = 0; i < result_con.recordset.length; i++) {
       let receiver;
       let sender;
-      if ((result_con.recordset[i].PARTICIPENT_1 == id)) {
+      if (result_con.recordset[i].PARTICIPENT_1 == id) {
         sender = result_con.recordset[i].PARTICIPENT_1;
         receiver = result_con.recordset[i].PARTICIPENT_2;
       } else {
-        if ((result_con.recordset[i].PARTICIPENT_2 == id)) {
+        if (result_con.recordset[i].PARTICIPENT_2 == id) {
           sender = result_con.recordset[i].PARTICIPENT_2;
           receiver = result_con.recordset[i].PARTICIPENT_1;
-        }else{
+        } else {
           continue;
         }
       }
@@ -156,13 +156,12 @@ const getUserConversations = async (id) => {
         WHERE [CHAT_ID] = @ID
     `);
 
-    let message;
-      if(result.recordset.length !==0 ){
-        message = { MESSAGE: result.recordset[0].MESSAGE.slice(0,10) };
+      let message;
+      if (result.recordset.length !== 0) {
+        message = { MESSAGE: result.recordset[0].MESSAGE.slice(0, 10) };
       }
-      const result_2 = await pool
-        .request()
-        .input("ID", sql.VarChar, receiver).query(`
+      const result_2 = await pool.request().input("ID", sql.VarChar, receiver)
+        .query(`
                     SELECT F_NAME,L_NAME FROM USERS
                     WHERE ID= @ID
                 `);
@@ -171,7 +170,11 @@ const getUserConversations = async (id) => {
       };
 
       const obj = await {
-        ...{ID:result_con.recordset[i].ID,SENDER_ID:sender,RECEIVER_ID:receiver},
+        ...{
+          ID: result_con.recordset[i].ID,
+          SENDER_ID: sender,
+          RECEIVER_ID: receiver,
+        },
         ...result.recordset[0],
         ...name,
         ...message,
@@ -185,53 +188,52 @@ const getUserConversations = async (id) => {
   }
 };
 
-const checkUserConversation= async(sender_id, receiver_id)=>{
+const checkUserConversation = async (sender_id, receiver_id) => {
   let pool;
-  try{
+  try {
     pool = await getPool();
-    const request = await pool.request()
-    .input('SENDER_ID', sql.VarChar,sender_id)
-    .input('RECEIVER_ID',sql.VarChar,receiver_id)
-    .query(`
+    const request = await pool
+      .request()
+      .input("SENDER_ID", sql.VarChar, sender_id)
+      .input("RECEIVER_ID", sql.VarChar, receiver_id).query(`
       SELECT * FROM CONVERSATIONS
       WHERE (PARTICIPENT_1 = @SENDER_ID AND PARTICIPENT_2 = @RECEIVER_ID) OR (PARTICIPENT_2 = @SENDER_ID AND PARTICIPENT_1 = @RECEIVER_ID)
-      `)
+      `);
 
-    if(request.recordset.length ==0){
-      return {exists:false}
+    if (request.recordset.length == 0) {
+      return { exists: false };
     }
 
-    return {exists: true}
-
-  }catch(err){
-    return {message:"something went wrong in backend/userInfo"}
+    return { exists: true };
+  } catch (err) {
+    return { message: "something went wrong in backend/userInfo" };
   }
-}
+};
 
-const addUserConversation= async(sender_id, receiver_id,message_id)=>{
+const addUserConversation = async (sender_id, receiver_id, message_id) => {
   let pool;
-  try{
-
+  try {
     const { nanoid } = await import("nanoid");
     const id = nanoid();
 
     pool = await getPool();
-    const request = await pool.request()
-    .input('SENDER_ID', sql.VarChar,sender_id)
-    .input('RECEIVER_ID',sql.VarChar,receiver_id)
-    .input('ID',sql.VarChar,id)
-    .input('MESSAGES',  sql.VarChar,message_id)
-    .query(`
+    const request = await pool
+      .request()
+      .input("SENDER_ID", sql.VarChar, sender_id)
+      .input("RECEIVER_ID", sql.VarChar, receiver_id)
+      .input("ID", sql.VarChar, id)
+      .input("MESSAGES", sql.VarChar, message_id).query(`
       INSERT INTO CONVERSATIONS (ID,PARTICIPENT_1, PARTICIPENT_2,MESSAGES)
       VALUES (@ID,@SENDER_ID,@RECEIVER_ID,@MESSAGES)
-      `)
+      `);
 
-    return {done: true}
-
-  }catch(err){
-    return {message:"something went wrong in backend/userInfo/addUserConversation"}
+    return { done: true };
+  } catch (err) {
+    return {
+      message: "something went wrong in backend/userInfo/addUserConversation",
+    };
   }
-}
+};
 
 const getAllUsers = async (email) => {
   let pool;
@@ -256,6 +258,32 @@ const getAllUsers = async (email) => {
     } */
 };
 
+const updatePassword = async (id, email,password) => {
+  if (!id || !email || !password) return { message: "ID or EMAIL or PASSWORD cannot be Null" };
+  let pool;
+
+  try {
+    pool = await getPool();
+
+    const request = await pool
+      .request()
+      .input("ID", sql.VarChar, id)
+      .input("EMAIL", sql.VarChar, email)
+      .input("PASSWORD", sql.VarChar, password)
+      .query(`
+        UPDATE USERS
+        SET PASSWORD = @PASSWORD
+        WHERE ID = @ID AND EMAIL = @EMAIL
+      `);
+
+    return {done: true};
+
+
+  } catch (err) {
+    return {done:false, message: err.message};
+  }
+};
+
 module.exports = {
   addUser,
   getUser,
@@ -263,5 +291,6 @@ module.exports = {
   setSocketId,
   getUserConversations,
   checkUserConversation,
-  addUserConversation
+  addUserConversation,
+  updatePassword,
 };

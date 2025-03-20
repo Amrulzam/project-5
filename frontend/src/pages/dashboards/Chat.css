@@ -5,9 +5,16 @@
 }
 
 
- @media screen and (max-width:500px) {
+ @media screen and (max-width:670px) {
     .chat-wrapper> .chat-main > .chat-box{
         display: none;
+    }
+
+    .chat-box-appear{
+        display: block;
+        width: 100%;
+        height: 100vh;
+        position: fixed;
     }
 
     .chat-wrapper > .chat-main >.chats{

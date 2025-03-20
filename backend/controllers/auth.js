@@ -60,7 +60,7 @@ const login = async (req,res)=>{
             return res.status(404).json({Message:"Incorrect Password"});
         }
 
-        const token = jwt.sign({id:user.info.ID},"secret_key",{expiresIn:'1h'});
+        const token = jwt.sign({id:user.info.ID},"secret_key",{expiresIn:'1d'});
         user.info.PASSWORD= undefined;
         console.log("Login success");
         return res.status(200).json({token,user:user.info,message:"Login success"});

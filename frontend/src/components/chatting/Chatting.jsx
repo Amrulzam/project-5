@@ -39,14 +39,17 @@ import {
   ArrowBendUpRight,
   Star,
   Backspace,
+  ArrowLeft,
 } from "@phosphor-icons/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../context/SocketContext";
 import { setRoom } from "../../features/roomSlice";
-import { setMessages } from "../../features/chattingSlice";
+import { setDefault, setMessages } from "../../features/chattingSlice";
 import { selectSocket } from "../../features/socketSlice";
 import { DateTime } from "luxon";
+
+
 
 const Chatting = ({ props }) => {
   const navigate = useNavigate();
@@ -138,11 +141,11 @@ const Chatting = ({ props }) => {
         `http://localhost:4002/conversations/${props.sender_id}/${props.receiver_id}`
       )
       .then((res) => {
-        console.log("converstion verified");
+        console.log("conversation verified");
         setHaveMet(res.data.exists);
       })
       .catch((err) => {
-        console.log("error verifying conversation");
+        console.log("error verifying conversation "+err);
       });
   }, [chats]);
 
@@ -248,7 +251,12 @@ const Chatting = ({ props }) => {
   };
 
   return (
-    <div className="chatting-wrapper">
+    <div>
+      {chatting.id==""?
+      <div className="chatting-wrapper-blank-outer">
+        <div className="chatting-wrapper-blank-inner"><p>Select A Conversation</p></div>
+      </div>
+      :<div className="chatting-wrapper">
       <div className="message-more-options" style={{left:`${mousePosition.x}px`,top:`${mousePosition.y}px`}}>
         <MessageOptions props={{
           moreOptions:moreOptions,
@@ -262,6 +270,7 @@ const Chatting = ({ props }) => {
           sx={{
             width: "100%",
             justifyContent: "space-between",
+            border: "1px solid #000",
           }}
         >
           <Stack
@@ -270,6 +279,13 @@ const Chatting = ({ props }) => {
               minWidth: "250px",
             }}
           >
+            <IconButton className="chat-back-icon" sx={{
+              borderRadius:2,
+              padding:"0px 10px",
+              fontWeight:500,
+            }} onClick={()=>{dispatch(setDefault())}}><ArrowLeft size="1.5rem"/></IconButton>
+
+
             <Badge
               anchorOrigin={{
                 vertical: "bottom",
@@ -323,21 +339,30 @@ const Chatting = ({ props }) => {
           </Stack>
           <Stack
             direction="row"
-            spacing={4}
+            spacing={1}
             sx={{
               justifyContent: "space-between",
               alignItems: "center",
             }}
           >
-            <Stack direction="row" spacing={3}>
-              <IconButton>
-                <PhoneCall size={25} />
+            <Stack direction="row" spacing={screen.width < 500 ? 0 : 1.5}>
+              <IconButton sx={{
+              borderRadius:2,
+              fontWeight:500,
+            }}>
+                <PhoneCall size="1.35rem" />
               </IconButton>
-              <IconButton>
-                <VideoCallIcon fontSize="15px" />
+              <IconButton sx={{
+              borderRadius:2,
+              fontWeight:500,
+            }}>
+                <VideoCallIcon fontSize="1.35rem" />
               </IconButton>
-              <IconButton>
-                <MagnifyingGlass size={25} />
+              <IconButton sx={{
+              borderRadius:2,
+              fontWeight:500,
+            }}>
+                <MagnifyingGlass size="1.35rem" />
               </IconButton>
             </Stack>
             <Box
@@ -346,8 +371,11 @@ const Chatting = ({ props }) => {
                 paddingLeft: "10px",
               }}
             >
-              <IconButton>
-                <DotsThreeVertical size={25} />
+              <IconButton sx={{
+              borderRadius:2,
+              fontWeight:500,
+            }}>
+                <DotsThreeVertical size="1.35rem" />
               </IconButton>
             </Box>
           </Stack>
@@ -355,7 +383,7 @@ const Chatting = ({ props }) => {
       </div>
       <div className="chatting-middle">
         <div className="down-icon">
-          <CaretDown size={21} />
+          <CaretDown size="1.3rem" />
         </div>
         <ul>
           {chats.map((chat, index) => {
@@ -426,7 +454,7 @@ const Chatting = ({ props }) => {
               ))}
             </Stack>
             <Plus
-              size={25}
+              size="1.3rem"
               onClick={() => {
                 setEmojiOpen(false);
                 setMediaOpen(!mediaOpen);
@@ -450,7 +478,7 @@ const Chatting = ({ props }) => {
               />
             </Box>
             <Smiley
-              size={25}
+              size="1.3rem"
               onClick={() => {
                 setMediaOpen(false);
                 setEmojiOpen(!emojiOpen);
@@ -479,10 +507,10 @@ const Chatting = ({ props }) => {
         <div className="chat-send">
           <div>
             {msg == "" ? (
-              <Microphone size={23} />
+              <Microphone size="1.3rem" />
             ) : (
               <PaperPlaneRight
-                size={23}
+                size="1.3rem"
                 onClick={() => {
                   sendMessage();
                 }}
@@ -491,6 +519,7 @@ const Chatting = ({ props }) => {
           </div>
         </div>
       </div>
+    </div>}
     </div>
   );
 };
